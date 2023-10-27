@@ -1,59 +1,83 @@
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class RegisterPage extends StatelessWidget {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  Future<void> _registerUser(BuildContext context) async {
+    final url = Uri.parse('http://localhost:3000/users');
+
+    final response = await http.post(
+      url,
+      body: {
+        'name': nameController.text,
+        'email': emailController.text,
+        'senha': passwordController.text,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Successful registration
+      final responseData = json.decode(response.body);
+      // You can handle the response data as needed
+      print(responseData);
+      Navigator.pushReplacementNamed(context, '/login');
+    } else {
+      // Handle errors, e.g., display an error message to the user
+      print('Registration failed');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       child: Stack(
         children: <Widget>[
-          // Imagem de fundo
           Image.asset(
             "assets/background.png",
-            width: double.infinity, // Ocupa toda a largura da tela
-            height: 400, // Ocupa toda a altura da tela
-            fit: BoxFit.cover, // Preenche todo o espaço disponível
+            width: double.infinity,
+            height: 400,
+            fit: BoxFit.cover,
           ),
           Center(
             child: SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.all(40.0),
-                color: CupertinoColors.white, // Fundo branco com transparência
+                color: CupertinoColors.white,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    // Formulário de login
                     DefaultTextStyle(
                       style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w600,
-                          color: CupertinoColors.black),
+                        fontSize: 32,
+                        fontWeight: FontWeight.w600,
+                        color: CupertinoColors.black,
+                      ),
                       child: Text('Cadastrar'),
                     ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
+                    SizedBox(height: 20.0),
                     CupertinoTextField(
+                      controller: nameController,
                       placeholder: 'Nome',
                     ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
+                    SizedBox(height: 10.0),
                     CupertinoTextField(
+                      controller: emailController,
                       placeholder: 'Email',
                     ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
+                    SizedBox(height: 10.0),
                     CupertinoTextField(
+                      controller: passwordController,
                       placeholder: 'Senha',
-                      obscureText: true, // Para senhas
+                      obscureText: true,
                     ),
-                    SizedBox(
-                      height: 20.0,
-                    ), // Espaçamento entre campos e botões
+                    SizedBox(height: 20.0),
                     CupertinoButton.filled(
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/login');
+                        _registerUser(context);
                       },
                       child: Text('Cadastrar'),
                     ),
@@ -61,7 +85,7 @@ class RegisterPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushReplacementNamed(context, '/login');
                       },
-                      child: Text('Ja tem uma conta?'),
+                      child: Text('Já tem uma conta?'),
                     ),
                   ],
                 ),

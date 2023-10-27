@@ -17,7 +17,7 @@ class NextMaintenanceBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width - 110;
+    double screenWidth = MediaQuery.of(context).size.width - 50;
 
     return GestureDetector(
         onTap: () {
